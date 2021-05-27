@@ -1,9 +1,6 @@
 package persistence;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
+import javax.persistence.*;
 import java.util.List;
 
 public class DaoFactory {
@@ -14,7 +11,7 @@ public class DaoFactory {
     public User findUserByUsername( String name ){
         try {
             return entityManager.createQuery("from User u where u.username ='"+name+"'", User.class).getSingleResult();
-        }catch (Exception e){
+        }catch (NoResultException e){
             return null ;
         }
     }
@@ -22,12 +19,14 @@ public class DaoFactory {
         User user = findUserByUsername(username);
         if (user != null) {
             try {
-                return user.getMessagesToSend();
+              return  user.getMessagesToSend();
+              //return entityManager.createQuery("from MessageToSend mts where mts.receiver='"
+                //       +user+"'",MessageToSend.class).getResultList();
             }catch (Exception e){
-                return null;
+                return null ;
             }
-        }
-        else return null ;
+        } else return null ;
+
     }
     public void deleteMessage(MessageToSend message){
         try {
@@ -53,7 +52,6 @@ public class DaoFactory {
             entityManager.persist(new MessageToSend(receiver,sender,msg));
             entityManager.getTransaction().commit();
         }catch (Exception e){
-            e.printStackTrace();
             return;
         }
     }

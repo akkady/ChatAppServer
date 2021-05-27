@@ -39,10 +39,11 @@ public class Conversation extends Thread {
                     }
                 }
                 else if (check(conversationOwner)){
-                    io.getPrintWriter().println("this username is token try an other one");
+                    io.getPrintWriter().println("token:");
                 }else {
                     Server.clientInfos.add(new ClientInfo(conversationOwner,socket));
                     System.out.println(conversationOwner+" was connected from : "+socket.getRemoteSocketAddress());
+                    io.getPrintWriter().println("ok:");
                     usernameExist = false ;
                 }
             }
@@ -53,6 +54,7 @@ public class Conversation extends Thread {
                         if (ci.getUsername().equals(conversationOwner)) {
                             Server.clientInfos.remove(ci);
                             System.out.println(conversationOwner+ " was disconnected");
+                            socket.close();
                             break;
                         }
                     }
@@ -63,8 +65,8 @@ public class Conversation extends Thread {
                     String [] info = msg.split("=>");
                     sendTo(info[0],info[1]);
                 }else {
-                    if(Server.daoFactory.findUserByUsername(msg)!=null)io.getPrintWriter().println("yes");
-                    else io.getPrintWriter().println("no");
+                    if(Server.daoFactory.findUserByUsername(msg)!=null)io.getPrintWriter().println("$yes");
+                    else io.getPrintWriter().println("$no");
                 }
             }
         } catch (IOException e) {
